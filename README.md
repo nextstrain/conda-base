@@ -1,0 +1,115 @@
+# Conda package for nextstrain-base
+
+This is the source for creating the `nextstrain-base` Conda package.
+
+This meta-package depends on all the other packages needed for a base
+Nextstrain runtime installed as a Conda environment.  As the nextstrain/base
+image is to Nextstrain CLI's Docker runtime, this nextstrain-base package is to
+Nextstrain CLI's Conda runtime.
+
+Note that this is not a general purpose package for installing Nextstrain.
+It's intended for use by Nextstrain CLI's managed Conda runtime and may be
+unsuitable for use in a user-managed Conda environment.
+
+
+## Developing
+
+First, setup a Conda environment for development in `.dev-env/` so that
+[Boa](https://boa-build.readthedocs.io) is available.
+
+    ./devel/setup
+
+You only need to do this once, or whenever you want to refresh your development
+environment.  Either [Micromamba][], [Mamba][], or [Conda][] must be available
+for setup to succeed.
+
+[Micromamba]: https://mamba.readthedocs.io/page/user_guide/micromamba.html
+[Mamba]: https://mamba.readthedocs.io
+[Conda]: https://docs.conda.io/projects/conda/
+
+### Building
+
+To build this package locally, run:
+
+    ./devel/build
+
+The final built package will be written to
+`build/locked/<arch>/nextstrain-base-*.conda`, where `<arch>` is a Conda
+subdir, e.g. `linux-64` or `osx-64`.
+
+[CI][] builds store the entire `build/` and `locked/` directories as an
+artifact attached to each CI run.  You can download the artifacts to inspect
+the built packages or install them.
+
+[CI]: https://github.com/nextstrain/conda-base/actions/workflows/ci.yaml
+
+### Installing
+
+To install the built package into a new environment, run:
+
+    mamba create                              \
+      --prefix /path/to/new/env               \
+      --strict-channel-priority               \
+      --override-channels                     \
+      --channel conda-forge                   \
+      --channel bioconda                      \
+      --channel ./build/locked                \
+      nextstrain-base
+
+### Uploading
+
+To upload the built package to anaconda.org, run:
+
+    ./devel/upload
+
+You'll need an appropriate Anaconda API token set in the `ANACONDA_TOKEN`
+environment variable.  The token must have at least the `api:read`,
+`api:write`, and `conda` scopes attached to it.
+
+You can adjust the label applied to the uploaded package by setting the `LABEL`
+environment variable.  By default the Git ref is used to determine the label:
+
+- Uploads from our `main` branch are given the `main` label.  These packages
+  will be found by default for anyone using our Anaconda channel (e.g.
+  `--channel nextstrain`).
+
+- Uploads from other branches, tags, and PRs will get `branch-<name>`,
+  `tag-<name>`, and `pull-<number>` labels.  These packages can be used by
+  asking for them explicitly (e.g. `--channel nextstrain/label/pull-123`).
+
+If no label can be worked out, then `dev` is used as a final fallback.
+
+[CI][] uploads the built package if it passes the test phase.  You can use the
+above labels to install CI-uploaded packages locally without downloading the CI
+artifacts.
+
+
+### Repository layout
+
+`src/` contains the package recipe source.  Any files in this directory will be
+automatically included in the built package.  (`recipe.yaml` doesn't live in
+the top-level of the repo, and thus `src/` exists, to avoid including the whole
+repo in each built package.)
+
+`locked/` contains the package recipe source after requirements locking.  It is
+overwritten on each build and not tracked in version control.
+
+`build/` contains build outputs not tracked in version control.
+
+`devel/` contains programs for development of this package.
+
+`.condarc` is used to specify configuration (e.g. channels) for `boa build`.
+
+
+## History
+
+- [Initial suggestion of the meta-package][1] on the Nextstrain CLI PR
+  introducing the Conda runtime.
+
+- [Further discussion about the meta-package][2] on Slack, motivated by the
+  Conda runtime [breaking between one day and the next][3] due to upstream
+  changes.
+
+[1]: https://github.com/nextstrain/cli/pull/218#issuecomment-1269082344
+[2]: https://bedfordlab.slack.com/archives/C01LCTT7JNN/p1665599068266849
+[3]: https://bedfordlab.slack.com/archives/C01LCTT7JNN/p1665594330478279

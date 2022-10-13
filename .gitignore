@@ -1,0 +1,6 @@
+# Conda env used for development
+/.dev-env/
+
+# Build outputs
+/build/
+/locked/

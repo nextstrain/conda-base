@@ -1,0 +1,81 @@
+package:
+  name: nextstrain-base
+  version: "{{ environ['VERSION'] }}"
+
+build:
+  number: 1
+  #
+  # XXX TODO: If Boa ever supports conda-build's "pin_depends: strict" here¹, I
+  # think it could replace our entire two-pass build process!  Unfortunately,
+  # conda-build is so much slower than Boa that the more complicated build
+  # process is worth it.
+  #   -trs, 14 Oct 2022
+  #
+  # ¹ <https://github.com/mamba-org/boa/issues/300>
+  #
+  #pin_depends: strict
+
+about:
+  home: https://nextstrain.org
+  doc_url: https://docs.nextstrain.org/
+  dev_url: https://github.com/nextstrain/conda-base
+  summary: Base Nextstrain runtime (meta-package)
+  description: >
+    This meta-package depends on all the other packages needed for a base
+    Nextstrain runtime installed as a Conda environment.  As the
+    nextstrain/base image is to Nextstrain CLI's Docker runtime, this
+    nextstrain-base package is to Nextstrain CLI's Conda runtime.
+  license: >
+    The license for this meta-package is MIT; individual tools vary.
+
+requirements:
+  run:
+    #
+    # First-party
+    #
+    # XXX TODO: Install Next{align,clade} v1 alongside v2 like the Docker
+    # runtime does?  Unclear how to do this in Conda without creating entirely
+    # separate packages (e.g. nextalign1 and nextalign2).
+    # XXX TODO: Include fauna?
+    #
+    - augur
+    - auspice
+    - nextalign
+    - nextclade
+    - nextstrain-cli
+
+    #
+    # Third-party
+    #
+    # XXX TODO: Pin some of these to the same versions the Docker runtime uses?
+    # XXX TODO: No package available for Python envdir package.
+    # XXX TODO: No package available for less.
+    # XXX TODO: Omits pysam… but it may be unnecessary in the Docker runtime?
+    # XXX TODO: Omits pango-designation… but it may be unnecessary in the Docker runtime?
+    #
+    # Include bash so that a newer version is guaranteed to be available on
+    # systems with an older bash.  This is similar to how our Docker runtime
+    # image includes its own bash too.
+    #
+    - awscli
+    - bash
+    - bzip2
+    - csvtk
+    - curl
+    - epiweeks
+    - git
+    - google-cloud-storage
+    - gzip
+    - jq
+    - pangolearn
+    - pangolin
+    - perl
+    - ruby
+    - seqkit
+    - snakemake
+    - tsv-utils
+    - unzip
+    - wget
+    - xz
+    - zip
+    - zstd

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+source "$(dirname "$0")/_common"
+cd "$repo"
+
+export PATH="$env/bin:$PATH"
+
+main() {
+    anaconda \
+        --token "$ANACONDA_TOKEN" \
+        upload \
+            --label "${LABEL:-$(./devel/label-for-ref)}" \
+            ./build/locked/*/nextstrain-base-*_locked.conda
+}
+
+main "$@"
