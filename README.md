@@ -5,14 +5,44 @@ This is the source for creating the `nextstrain-base` Conda package.
 This meta-package depends on all the other packages needed for a base
 Nextstrain runtime installed as a Conda environment.  As the nextstrain/base
 image is to Nextstrain CLI's Docker runtime, this nextstrain-base package is to
-Nextstrain CLI's Conda runtime.
+Nextstrain CLI's Conda runtime.  The package's dependencies which completely
+lock its full transitive dependency tree.  This means that if version _X_ of
+nextstrain-base worked some way in the past, it'll work the same way in the
+future.
 
 Note that this is not a general purpose package for installing Nextstrain.
 It's intended for use by Nextstrain CLI's managed Conda runtime and may be
 unsuitable for use in a user-managed Conda environment.
 
 
+## How it works
+
+The meta-package source recipe is in `src/recipe.yaml`.  This is a [Boa recipe
+spec](https://boa-build.readthedocs.io/en/latest/recipe_spec.html).  It defines
+our runtime's direct dependencies, typically without version restrictions
+(pins) or with only loose pinning as necessary.
+
+A two-pass build process is used to produce the final package.
+
+In the first pass, the source recipe is built into a package in `build/src/`.
+This package _does not_ lock its dependency tree.  Crucially, however, such a
+tree is still resolved during the build and recorded as package metadata.
+
+In the second pass, the recorded locked dependency tree is extracted from the
+first pass and substituted into the source recipe to produce the locked recipe,
+`locked/recipe.yaml`.  The locked recipe is then built into a package in
+`build/locked/`.  This final package now _does_ fully lock its dependency tree.
+
+As the fully locked dependency trees are platform-specific, [CI][] produces
+packages for both Linux and macOS (i.e. for Conda's `linux-64` and `osx-64`
+subdirs).
+
+
 ## Developing
+
+_You can build this package locally during development, but it's important for
+production releases to happen via CI so packages are built for both Linux and
+macOS._
 
 First, setup a Conda environment for development in `.dev-env/` so that
 [Boa](https://boa-build.readthedocs.io) is available.
