@@ -1,0 +1,6 @@
+repo="$(cd "$(dirname "$BASH_SOURCE")/.."; pwd)"
+env="$repo/.dev-env"
+
+log() {
+    echo "╱╱" "$@"
+}

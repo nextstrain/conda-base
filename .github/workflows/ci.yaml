@@ -1,0 +1,98 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - README.md
+
+  pull_request:
+    paths-ignore:
+      - README.md
+
+  workflow_dispatch:
+
+jobs:
+  generate-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: set-version
+        run: echo "version=$(./devel/generate-version)" | tee -a "$GITHUB_OUTPUT"
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+
+  build-and-test:
+    needs: generate-version
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+
+    name: build and test (os=${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: mamba-org/provision-with-micromamba@v13
+        with:
+          environment-file: false
+
+      - uses: actions/checkout@v3
+
+      - run: ./devel/setup
+      - run: ./devel/build
+        env:
+          VERSION: ${{ needs.generate-version.outputs.version }}
+
+      - if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-outputs-${{ matrix.os }}
+          path: |
+            build/
+            locked/
+
+      - if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages
+          path: build/locked/*/nextstrain-base-*.conda
+
+      - name: Test install of nextstrain-base
+        run: |
+          micromamba create                 \
+            --yes                           \
+            --prefix ./test-env             \
+            --strict-channel-priority       \
+            --override-channels             \
+            --channel ./build/locked        \
+            --channel conda-forge           \
+            --channel bioconda              \
+            nextstrain-base
+
+      # XXX TODO: Install Nextstrain CLI (standalone), then run test build.
+
+  release:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: mamba-org/provision-with-micromamba@v13
+        with:
+          environment-file: false
+
+      - uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          name: packages
+          path: build/locked/
+
+      - run: ./devel/setup
+
+      - name: Set LABEL
+        run: echo LABEL="$(./devel/label-for-ref "$GITHUB_REF")" | tee -a "$GITHUB_ENV"
+
+      - run: ./devel/upload
+        env:
+          ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}

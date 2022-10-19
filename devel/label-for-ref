@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# Determines an appropriate package label (channel subset) for the given ref
+# (e.g. refs/heads/foo).  If no ref is given, uses the current ref (if any).
+#
+# Usually called with $GITHUB_REF, c.f. <https://docs.github.com/en/actions/learn-github-actions/environment-variables#default-environment-variables>.
+#
+set -euo pipefail
+
+main() {
+    local ref
+    ref="${1:-$(current-ref)}"
+
+    case "$ref" in
+        refs/heads/main)
+            echo main;;
+
+        refs/heads/*)
+            # → branch-<name>
+            ref="${ref#refs/heads/}"
+            echo "branch-${ref//[^A-Za-z0-9._-]/-}"
+            ;;
+
+        refs/tags/*)
+            # → tag-<name>
+            ref="${ref#refs/tags/}"
+            echo "tag-${ref//[^A-Za-z0-9._-]/-}"
+            ;;
+
+        refs/pull/*/merge)
+            # → pull/<number>
+            ref="${ref#refs/pull/}"
+            ref="${ref%/merge}"
+            echo "pull-$ref"
+            ;;
+
+        *)
+            echo dev;;
+    esac
+}
+
+current-ref() {
+    git rev-parse --verify --symbolic-full-name --end-of-options HEAD 2>/dev/null || echo ""
+}
+
+main "$@"

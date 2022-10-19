@@ -1,0 +1,62 @@
+#!/bin/bash
+set -euo pipefail
+
+source "$(dirname "$0")/_common"
+
+main() {
+    log "Setting up $env"
+    remove
+    create
+}
+
+remove() {
+    if [[ -e "$env" ]]; then
+        log "Removing existing env"
+        rm -rf "$env"
+    fi
+}
+
+create() {
+    local -a pkgs=(
+        boa
+
+        # for manipulating recipe.yaml with jq
+        yq
+
+        # for extracting files from .conda packages
+        tar
+        unzip
+        zstd
+    )
+
+    log "Creating new env with packages: ${pkgs[*]}"
+    conda-ish create \
+        --yes \
+        --prefix "$env" \
+        --override-channels \
+        --channel conda-forge \
+        "${pkgs[@]}"
+
+    # conda-forge includes a too-old version of anaconda-client, so install it
+    # (and only it) from the default channels.
+    log "Installing anaconda-client from default channels"
+    conda-ish install \
+        --yes \
+        --prefix "$env" \
+        --override-channels \
+        --channel defaults \
+        anaconda-client
+}
+
+conda-ish() {
+    for condaish in micromamba mamba conda; do
+        if type -a "$condaish" >/dev/null 2>&1; then
+            "$condaish" "$@"
+            return $?
+        fi
+    done
+    echo "No conda-ish program (micromamba, mamba, conda) found" >&2
+    return 1
+}
+
+main "$@"
