@@ -68,6 +68,7 @@ requirements:
     - google-cloud-storage
     - gzip
     - jq
+    - ncbi-datasets-cli
     - pangolearn
     - pangolin
     - perl
