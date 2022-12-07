@@ -38,12 +38,12 @@ requirements:
     # separate packages (e.g. nextalign1 and nextalign2).
     # XXX TODO: Include fauna?
     #
-    - augur
-    - auspice
+    - augur >=18
+    - auspice >=2.40
     - evofr
     - nextalign
     - nextclade
-    - nextstrain-cli
+    - nextstrain-cli >=5
 
     #
     # Third-party
@@ -67,9 +67,8 @@ requirements:
     - git
     - google-cloud-storage
     - gzip
+    - iqtree >=2
     - jq
-    - pangolearn
-    - pangolin
     - perl
     - ruby
     - seqkit
