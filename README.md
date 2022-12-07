@@ -51,7 +51,9 @@ First, setup a Conda environment for development in `.dev-env/` so that
 
 You only need to do this once, or whenever you want to refresh your development
 environment.  Either [Micromamba][], [Mamba][], or [Conda][] must be available
-for setup to succeed.
+for setup to succeed. You do not need to create a new environment yourself,
+the script automatically sets everything up without interfering with your
+existing environments.
 
 [Micromamba]: https://mamba.readthedocs.io/page/user_guide/micromamba.html
 [Mamba]: https://mamba.readthedocs.io
