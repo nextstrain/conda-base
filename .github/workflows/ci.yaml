@@ -75,7 +75,9 @@ jobs:
       # XXX TODO: Install Nextstrain CLI (standalone), then run test build.
 
   release:
-    needs: build-and-test
+    needs:
+      - generate-version
+      - build-and-test
     runs-on: ubuntu-latest
     steps:
       - uses: mamba-org/provision-with-micromamba@v13
@@ -96,3 +98,12 @@ jobs:
       - run: ./devel/upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+
+      - name: Generate summary
+        run: |
+          # Replace ${x} in Markdown with value of environment variable "x".
+          perl -pe 's/\$\{(.+?)\}/$ENV{$1}/ge' \
+            < .github/workflows/ci.release.md \
+            > "$GITHUB_STEP_SUMMARY"
+        env:
+          VERSION: ${{ needs.generate-version.outputs.version }}
