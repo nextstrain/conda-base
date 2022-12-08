@@ -6,8 +6,10 @@ source "$(dirname "$0")/_common"
 cd "$repo"
 
 main() {
-    export VERSION="${VERSION:-$(./devel/generate-version)}"
+    # First things first: set PATH early so everything that follows has the dev
+    # env available.
     export PATH="$env/bin:$PATH"
+    export VERSION="${VERSION:-$(./devel/generate-version)}"
 
     clean
     build src
