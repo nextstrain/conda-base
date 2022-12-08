@@ -15,7 +15,7 @@ on:
 
 jobs:
   generate-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - id: set-version
@@ -29,13 +29,13 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
-          - macos-latest
+          - ubuntu-22.04
+          - macos-12
 
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: mamba-org/provision-with-micromamba@v13
+      - uses: mamba-org/provision-with-micromamba@v14
         with:
           environment-file: false
 
@@ -84,9 +84,9 @@ jobs:
     needs:
       - generate-version
       - build-and-test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - uses: mamba-org/provision-with-micromamba@v13
+      - uses: mamba-org/provision-with-micromamba@v14
         with:
           environment-file: false
 
