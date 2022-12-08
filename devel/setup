@@ -32,7 +32,7 @@ create() {
         coreutils
 
         # for diffing dependencies in CI
-        csv-diff
+        trsibley::csv-diff
         curl
         wget
     )
