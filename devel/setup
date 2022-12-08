@@ -30,6 +30,11 @@ create() {
 
         # to get gnu `date` on macOS
         coreutils
+
+        # for diffing dependencies in CI
+        csv-diff
+        curl
+        wget
     )
 
     log "Creating new env with packages: ${pkgs[*]}"

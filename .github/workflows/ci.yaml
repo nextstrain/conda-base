@@ -72,6 +72,12 @@ jobs:
             --channel bioconda              \
             nextstrain-base
 
+      - name: Generate summary
+        run: |
+          ./devel/download-latest
+          ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
+            > "$GITHUB_STEP_SUMMARY"
+
       # XXX TODO: Install Nextstrain CLI (standalone), then run test build.
 
   release:
