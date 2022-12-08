@@ -62,11 +62,7 @@ rendered-recipe() {
     # for this, but we can't seem to.  Instead, extract the rendered recipe
     # from the package built in the first pass.
     local package="$(echo ./build/src/*/nextstrain-base-"$VERSION"-!(*_locked).conda)"
-    local info="info-$(basename "$package" .conda).tar.zst"
-
-    unzip -p "$package" "$info" \
-        | unzstd --stdout \
-        | tar --extract --to-stdout info/recipe/recipe.yaml
+    ./devel/extract-pkg-info "$package" recipe/recipe.yaml
 }
 
 yaml-to-json() {

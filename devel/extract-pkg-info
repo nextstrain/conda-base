@@ -1,0 +1,30 @@
+#!/bin/bash
+# usage: extract-pkg-info <pkg.conda> <info-file>
+#
+# Extracts <info-file> from the info/ subarchive of a .conda package.  Writes
+# file contents to stdout.
+#
+# Example:
+#
+#     ./devel/extract-pkg-info build/locked/*/nextstrain-base-*.conda recipe/recipe.yaml
+#
+set -euo pipefail
+
+source "$(dirname "$0")/_common"
+export PATH="$env/bin:$PATH"
+
+main() {
+    if [[ $# -ne 2 ]]; then
+        print-help
+        exit 1
+    fi
+
+    package="$1"
+    file="$2"
+
+    unzip -p "$package" "info-$(basename "$package" .conda).tar.zst" \
+        | unzstd --stdout \
+        | tar --extract --to-stdout "info/$file"
+}
+
+main "$@"
