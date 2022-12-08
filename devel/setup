@@ -27,6 +27,9 @@ create() {
         tar
         unzip
         zstd
+
+        # to get gnu `date` on macOS
+        coreutils
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
