@@ -11,6 +11,12 @@ main() {
     export PATH="$env/bin:$PATH"
     export VERSION="${VERSION:-$(./devel/generate-version)}"
 
+    # Set CONDA_SUBDIR unless it's already set.  This helps macOS users on
+    # arm64 chips use and produce osx-64 Conda packages instead of osx-arm64
+    # packages (which we don't yet support).
+    CONDA_SUBDIR="${CONDA_SUBDIR:-$(./devel/conda-subdir)}"
+    export CONDA_SUBDIR
+
     clean
     build src
     lock
