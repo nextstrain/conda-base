@@ -1,5 +1,9 @@
 # Conda package for nextstrain-base
 
+![CI](https://github.com/nextstrain/conda-base/actions/workflows/ci.yaml/badge.svg)
+[![Anaconda-Server Badge](https://anaconda.org/nextstrain/nextstrain-base/badges/latest_release_relative_date.svg)](https://anaconda.org/nextstrain/nextstrain-base)
+[![Anaconda-Server Badge](https://anaconda.org/nextstrain/nextstrain-base/badges/downloads.svg)](https://anaconda.org/nextstrain/nextstrain-base)
+
 This is the source for creating the `nextstrain-base` Conda package.
 
 This meta-package depends on all the other packages needed for a base
