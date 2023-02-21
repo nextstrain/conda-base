@@ -30,6 +30,8 @@ about:
 
 requirements:
   run:
+    - python < 3.11
+    
     #
     # First-party
     #
