@@ -35,9 +35,11 @@ jobs:
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: mamba-org/provision-with-micromamba@v14
+      - uses: mamba-org/provision-with-micromamba@v15
         with:
           environment-file: false
+          extra-specs: |
+            python=3.10
 
       - uses: actions/checkout@v3
 
