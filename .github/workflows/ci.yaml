@@ -35,7 +35,7 @@ jobs:
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: mamba-org/provision-with-micromamba@v14
+      - uses: mamba-org/provision-with-micromamba@v15
         with:
           environment-file: false
 
@@ -86,7 +86,7 @@ jobs:
       - build-and-test
     runs-on: ubuntu-22.04
     steps:
-      - uses: mamba-org/provision-with-micromamba@v14
+      - uses: mamba-org/provision-with-micromamba@v15
         with:
           environment-file: false
 
