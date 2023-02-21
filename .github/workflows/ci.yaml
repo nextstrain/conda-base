@@ -38,8 +38,6 @@ jobs:
       - uses: mamba-org/provision-with-micromamba@v14
         with:
           environment-file: false
-          extra-specs: |
-            python=3.10
 
       - uses: actions/checkout@v3
 
