@@ -43,7 +43,7 @@ create() {
         --prefix "$env" \
         --override-channels \
         --channel conda-forge \
-        "${pkgs[@]}"
+        "${pkgs[@]}" python=3.10
 
     # conda-forge includes a too-old version of anaconda-client, so install it
     # (and only it) from the default channels.
