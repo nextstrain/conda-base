@@ -3,7 +3,7 @@ package:
   version: "{{ environ['VERSION'] }}"
 
 build:
-  number: 1
+  number: 0
   #
   # XXX TODO: If Boa ever supports conda-build's "pin_depends: strict" here¹, I
   # think it could replace our entire two-pass build process!  Unfortunately,
@@ -67,10 +67,9 @@ requirements:
     - git
     - google-cloud-storage
     - gzip
+    - iqtree >=2
     - jq
     - ncbi-datasets-cli
-    - pangolearn
-    - pangolin
     - perl
     - ruby
     - seqkit
