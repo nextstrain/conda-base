@@ -1,5 +1,9 @@
 # Conda package for nextstrain-base
 
+![CI](https://github.com/nextstrain/conda-base/actions/workflows/ci.yaml/badge.svg)
+[![Anaconda-Server Badge](https://anaconda.org/nextstrain/nextstrain-base/badges/latest_release_relative_date.svg)](https://anaconda.org/nextstrain/nextstrain-base)
+[![Anaconda-Server Badge](https://anaconda.org/nextstrain/nextstrain-base/badges/downloads.svg)](https://anaconda.org/nextstrain/nextstrain-base)
+
 This is the source for creating the `nextstrain-base` Conda package.
 
 This meta-package depends on all the other packages needed for a base
@@ -51,7 +55,9 @@ First, setup a Conda environment for development in `.dev-env/` so that
 
 You only need to do this once, or whenever you want to refresh your development
 environment.  Either [Micromamba][], [Mamba][], or [Conda][] must be available
-for setup to succeed.
+for setup to succeed. You do not need to create a new environment yourself,
+the script automatically sets everything up without interfering with your
+existing environments.
 
 [Micromamba]: https://mamba.readthedocs.io/page/user_guide/micromamba.html
 [Mamba]: https://mamba.readthedocs.io

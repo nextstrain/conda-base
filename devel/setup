@@ -18,6 +18,7 @@ remove() {
 
 create() {
     local -a pkgs=(
+        anaconda-client
         boa
 
         # for manipulating recipe.yaml with jq
@@ -27,6 +28,14 @@ create() {
         tar
         unzip
         zstd
+
+        # to get gnu `date` on macOS
+        coreutils
+
+        # for diffing dependencies in CI
+        csv-diff
+        curl
+        wget
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
@@ -36,16 +45,6 @@ create() {
         --override-channels \
         --channel conda-forge \
         "${pkgs[@]}"
-
-    # conda-forge includes a too-old version of anaconda-client, so install it
-    # (and only it) from the default channels.
-    log "Installing anaconda-client from default channels"
-    conda-ish install \
-        --yes \
-        --prefix "$env" \
-        --override-channels \
-        --channel defaults \
-        anaconda-client
 }
 
 conda-ish() {

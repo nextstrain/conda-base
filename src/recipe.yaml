@@ -69,6 +69,7 @@ requirements:
     - gzip
     - iqtree >=2
     - jq
+    - ncbi-datasets-cli
     - perl
     - ruby
     - seqkit

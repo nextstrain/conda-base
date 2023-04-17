@@ -1,0 +1,59 @@
+#!/bin/bash
+# usage: diff-pkgs <pkgA.conda> <pkgB.conda>
+#
+# Diffs two .conda packages, emitting plain text output which can be treated as
+# Markdown.
+set -euo pipefail
+
+source "$(dirname "$0")/_common"
+export PATH="$env/bin:$PATH"
+cd "$repo"
+
+main() {
+    if [[ $# -ne 2 ]]; then
+        print-help
+        exit 1
+    fi
+
+    local pkgA="$1"
+    local pkgB="$2"
+
+    echo "$(describe "$pkgA")  "
+    echo "$(describe "$pkgB")  "
+    echo
+    diff-deps "$pkgA" "$pkgB"
+}
+
+# There are several metadata info files with overlapping contents in a .conda
+# package.  We use info/index.json¹ which is what gets included into a channel's
+# index of packages, e.g. the information used by clients like Conda, Mamba,
+# Micromamba, etc.
+#
+# ¹ https://docs.conda.io/projects/conda/en/latest/user-guide/concepts/pkg-specs.html#info-index-json
+
+describe() {
+    ./devel/extract-pkg-info "$1" index.json | jq -r '
+        "\(.name) \(.version) \(.build) (\(.subdir))"
+    '
+}
+
+deps() {
+    ./devel/extract-pkg-info "$1" index.json | jq -r '
+        ("name version build", .depends[])
+            | split(" ")
+            | @csv
+    '
+}
+
+diff-deps() {
+    csv-diff \
+        --key name \
+        --singular package \
+        --plural packages \
+        <(deps "$1") \
+        <(deps "$2") \
+    | perl -pe 's/^  /    /'
+    # ^ Increase default indentation so these blocks render verbatim in Markdown
+}
+
+main "$@"

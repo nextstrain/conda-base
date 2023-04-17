@@ -6,8 +6,16 @@ source "$(dirname "$0")/_common"
 cd "$repo"
 
 main() {
-    export VERSION="${VERSION:-$(./devel/generate-version)}"
+    # First things first: set PATH early so everything that follows has the dev
+    # env available.
     export PATH="$env/bin:$PATH"
+    export VERSION="${VERSION:-$(./devel/generate-version)}"
+
+    # Set CONDA_SUBDIR unless it's already set.  This helps macOS users on
+    # arm64 chips use and produce osx-64 Conda packages instead of osx-arm64
+    # packages (which we don't yet support).
+    CONDA_SUBDIR="${CONDA_SUBDIR:-$(./devel/conda-subdir)}"
+    export CONDA_SUBDIR
 
     clean
     build src
@@ -60,11 +68,7 @@ rendered-recipe() {
     # for this, but we can't seem to.  Instead, extract the rendered recipe
     # from the package built in the first pass.
     local package="$(echo ./build/src/*/nextstrain-base-"$VERSION"-!(*_locked).conda)"
-    local info="info-$(basename "$package" .conda).tar.zst"
-
-    unzip -p "$package" "$info" \
-        | unzstd --stdout \
-        | tar --extract --to-stdout info/recipe/recipe.yaml
+    ./devel/extract-pkg-info "$package" recipe/recipe.yaml
 }
 
 yaml-to-json() {

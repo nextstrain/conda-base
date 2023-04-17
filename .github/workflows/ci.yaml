@@ -15,7 +15,7 @@ on:
 
 jobs:
   generate-version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - id: set-version
@@ -29,13 +29,13 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-latest
-          - macos-latest
+          - ubuntu-22.04
+          - macos-12
 
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: mamba-org/provision-with-micromamba@v13
+      - uses: mamba-org/provision-with-micromamba@v15
         with:
           environment-file: false
 
@@ -72,13 +72,21 @@ jobs:
             --channel bioconda              \
             nextstrain-base
 
+      - name: Generate summary
+        run: |
+          ./devel/download-latest
+          ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
+            > "$GITHUB_STEP_SUMMARY"
+
       # XXX TODO: Install Nextstrain CLI (standalone), then run test build.
 
   release:
-    needs: build-and-test
-    runs-on: ubuntu-latest
+    needs:
+      - generate-version
+      - build-and-test
+    runs-on: ubuntu-22.04
     steps:
-      - uses: mamba-org/provision-with-micromamba@v13
+      - uses: mamba-org/provision-with-micromamba@v15
         with:
           environment-file: false
 
@@ -96,3 +104,12 @@ jobs:
       - run: ./devel/upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+
+      - name: Generate summary
+        run: |
+          # Replace ${x} in Markdown with value of environment variable "x".
+          perl -pe 's/\$\{(.+?)\}/$ENV{$1}/ge' \
+            < .github/workflows/ci.release.md \
+            > "$GITHUB_STEP_SUMMARY"
+        env:
+          VERSION: ${{ needs.generate-version.outputs.version }}
