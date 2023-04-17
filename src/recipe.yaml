@@ -3,7 +3,7 @@ package:
   version: "{{ environ['VERSION'] }}"
 
 build:
-  number: 1
+  number: 0
   #
   # XXX TODO: If Boa ever supports conda-build's "pin_depends: strict" here¹, I
   # think it could replace our entire two-pass build process!  Unfortunately,
@@ -38,12 +38,12 @@ requirements:
     # separate packages (e.g. nextalign1 and nextalign2).
     # XXX TODO: Include fauna?
     #
-    - augur >=18
-    - auspice >=2.40
+    - augur
+    - auspice
     - evofr
     - nextalign
     - nextclade
-    - nextstrain-cli >=5
+    - nextstrain-cli
 
     #
     # Third-party
