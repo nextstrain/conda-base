@@ -70,6 +70,7 @@ requirements:
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
+    - pango_aliasor
     - perl
     - ruby
     - seqkit
