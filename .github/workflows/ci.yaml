@@ -18,10 +18,13 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      - id: set-version
-        run: echo "version=$(./devel/generate-version)" | tee -a "$GITHUB_OUTPUT"
+      - id: set
+        run: |
+          echo "version=$(./devel/generate-version)" | tee -a "$GITHUB_OUTPUT"
+          echo "label=$(./devel/label-for-ref "$GITHUB_REF")" | tee -a "$GITHUB_OUTPUT"
     outputs:
-      version: ${{ steps.set-version.outputs.version }}
+      version: ${{ steps.set.outputs.version }}
+      label: ${{ steps.set.outputs.label }}
 
   build-and-test:
     needs: generate-version
@@ -78,8 +81,6 @@ jobs:
           ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
             > "$GITHUB_STEP_SUMMARY"
 
-      # XXX TODO: Install Nextstrain CLI (standalone), then run test build.
-
   release:
     needs:
       - generate-version
@@ -98,12 +99,10 @@ jobs:
 
       - run: ./devel/setup
 
-      - name: Set LABEL
-        run: echo LABEL="$(./devel/label-for-ref "$GITHUB_REF")" | tee -a "$GITHUB_ENV"
-
       - run: ./devel/upload
         env:
           ANACONDA_TOKEN: ${{ secrets.ANACONDA_TOKEN }}
+          LABEL: ${{ needs.generate-version.outputs.label }}
 
       - name: Generate summary
         run: |
@@ -113,3 +112,34 @@ jobs:
             > "$GITHUB_STEP_SUMMARY"
         env:
           VERSION: ${{ needs.generate-version.outputs.version }}
+          LABEL: ${{ needs.generate-version.outputs.label }}
+
+  # Run pathogen repo CI builds with the final packages
+  test-pathogen-repo-ci:
+    needs:
+      - generate-version
+      - release
+    strategy:
+      # XXX TODO: Test on multiple platforms (os, maybe arch) via the matrix too
+      matrix:
+        include:
+          - { pathogen: avian-flu,       build-args: auspice/flu_avian_h5n1_ha.json }
+          - { pathogen: ebola }
+          - { pathogen: lassa }
+          - { pathogen: monkeypox }
+          - { pathogen: mumps }
+          - { pathogen: ncov,            build-args: all_regions -j 2 --profile nextstrain_profiles/nextstrain-ci }
+          - { pathogen: seasonal-flu,    build-args: --configfile profiles/ci/builds.yaml -p }
+          - { pathogen: zika }
+    name: test-pathogen-repo-ci (${{ matrix.pathogen }})
+    uses: nextstrain/.github/.github/workflows/pathogen-repo-ci.yaml@master
+    with:
+      repo: nextstrain/${{ matrix.pathogen }}
+      build-args: ${{ matrix.build-args }}
+      runtimes: |
+        - conda
+      env: |
+        NEXTSTRAIN_CONDA_CHANNEL: nextstrain/label/${{ needs.generate-version.outputs.label }}
+        NEXTSTRAIN_CONDA_BASE_PACKAGE: nextstrain-base ==${{ needs.generate-version.outputs.version }}
+      artifact-name: ${{ matrix.pathogen }}-outputs
+      continue-on-error: true
