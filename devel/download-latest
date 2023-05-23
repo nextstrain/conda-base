@@ -11,10 +11,7 @@ wget "$(
     curl -fsSL https://api.anaconda.org/package/nextstrain/nextstrain-base/files | jq -r '
           map(select(.labels|index("main")))
         | map(select(.attrs.subdir == env.CONDA_SUBDIR))
-        | (max_by(.version) | .version) as $max_version
-        | .
-        | map(select(.version == $max_version))
-        | max_by(.attrs.build_number)
+        | max_by([.version, .attrs.build_number])
         | .download_url
         | if startswith("//") then "https:\(.)" else . end
     '
