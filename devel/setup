@@ -36,6 +36,9 @@ create() {
         csv-diff
         curl
         wget
+
+        # Temporary pin until anaconda-client fixes dependency upstream
+        "urllib3<2"
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
