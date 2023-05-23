@@ -8,10 +8,11 @@ CONDA_SUBDIR="${CONDA_SUBDIR:-$("$repo"/devel/conda-subdir)}"
 export CONDA_SUBDIR
 
 wget "$(
-    curl -fsSL https://api.anaconda.org/release/nextstrain/nextstrain-base/latest | jq -r '
-          .distributions
+    curl -fsSL https://api.anaconda.org/package/nextstrain/nextstrain-base/files | jq -r '
+          map(select(.labels|index("main")))
         | map(select(.attrs.subdir == env.CONDA_SUBDIR))
-        | .[0].download_url
+        | max_by([.version, .attrs.build_number])
+        | .download_url
         | if startswith("//") then "https:\(.)" else . end
     '
 )"
