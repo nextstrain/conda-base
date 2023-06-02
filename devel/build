@@ -41,6 +41,9 @@ build() {
 }
 
 lock() {
+    log "Copying $repo/src to $repo/locked"
+    cp -a src locked
+
     # XXX TODO: It would be extra nice to prepend channel specifiers to each
     # locked dep (e.g. conda-forge::nextstrain-cli ==x.y.z hbadcafe_0_locked).
     # Boa has that info at build time, but it doesn't seem to make it into the
@@ -48,7 +51,6 @@ lock() {
     # somehow or leverage libmamba directly to obtain it…
     #   -14 Oct 2022
     log "Updating $repo/locked/recipe.yaml"
-    mkdir -p locked
     yq \
         --yaml-roundtrip \
         --slurpfile rendered <(rendered-recipe | yaml-to-json) \
