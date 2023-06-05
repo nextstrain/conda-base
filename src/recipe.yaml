@@ -15,6 +15,9 @@ build:
   #
   #pin_depends: strict
 
+source:
+  path: .
+
 about:
   home: https://nextstrain.org
   doc_url: https://docs.nextstrain.org/

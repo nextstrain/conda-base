@@ -1,0 +1,84 @@
+#!/usr/bin/env perl
+# A pure-Perl port of djb's envdir <https://cr.yp.to/daemontools/envdir.html>,
+# for quick, no-thought portability (because `perl` is available ~everywhere).
+#
+# There are many copies of envdir, this is mine.
+#
+# Copied from <https://github.com/tsibley/envdir/blob/a3099699/envdir>.
+#
+# Comments quote text from https://cr.yp.to/daemontools/envdir.html
+#
+# envdir runs another program with environment modified according to files in a
+# specified directory.
+#
+use strict;
+use warnings;
+use FindBin qw< $Script >;
+
+# Interface:
+#
+#     envdir <d> <child>
+#
+# <d> is a single argument. <child> consists of one or more arguments.
+#
+my $d     = shift;
+my @child = @ARGV;
+
+fatal("usage: %s <d> <child>", $Script)
+    unless defined $d and @child;
+
+# envdir sets various environment variables as specified by files in the
+# directory named <d>. It then runs <child>.
+#
+opendir my $dh, $d
+    or fatal("cannot read <%s>: %s", $d, $!);
+
+# If <d> contains a file named s whose first line is t, envdir removes an
+# environment variable named s if one exists, and then adds an environment
+# variable named s with value t.
+#
+for my $s (readdir $dh) {
+    next if $s =~ /^[.]{1,2}$/;
+
+    # The name s must not contain =.
+    next if $s =~ /=/;
+
+    delete $ENV{$s};
+
+    # If the file s is completely empty (0 bytes long), envdir removes an
+    # environment variable named s if one exists, without adding a new
+    # variable.
+    #
+    next if -z "$d/$s";
+
+    open my $fh, "<", "$d/$s"
+        or fatal("cannot read <%s>: %s", "$d/$s", $!);
+
+    my $t = <$fh>;
+
+    close $fh
+        or fatal("cannot close <%s>: %s", "$d/$s", $!);
+
+    # Spaces and tabs at the end of t are removed.
+    $t =~ s/\s+$//;
+
+    # Nulls in t are changed to newlines in the environment variable.
+    $t =~ s/\0/\n/g;
+
+    $ENV{$s} = $t;
+}
+closedir $dh
+    or fatal("cannot close <%s>: %s", $d, $!);
+
+# envdir exits 111 if it has trouble reading <d>, if it runs out of memory for
+# environment variables, or if it cannot run <child>. Otherwise its exit code
+# is the same as that of <child>.
+#
+exec @child
+    or fatal("Failed to exec([%s]): %s", join(" ", @child), $!);
+
+sub fatal {
+    my ($msg, @rest) = @_;
+    warn sprintf($msg, @rest), "\n";
+    exit 111;
+}
