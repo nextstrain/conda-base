@@ -1,0 +1,39 @@
+name: Installation
+
+on:
+  # Routinely check that the latest package is initially installable, to catch
+  # issues like <https://github.com/nextstrain/monkeypox/issues/177> earlier.
+  schedule:
+    # Every day at 17:42 UTC / 9:42 Seattle (winter) / 10:42 Seattle (summer)
+    - cron: "42 17 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  # The goal here is to make sure installation continues to work successfully
+  # on a variety of OS versions.  We're _not_ testing unreleased package builds
+  # here—the packages are downloaded from our Anaconda channel—which is why
+  # this isn't part of CI.
+  #   -trs, 29 August 2022
+  test:
+    name: test (os=${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-20.04
+          - ubuntu-22.04
+          - macos-11
+          - macos-12
+
+    runs-on: ${{matrix.os}}
+    steps:
+      - uses: nextstrain/.github/actions/setup-nextstrain-cli@master
+        with:
+          # First Nextstrain CLI version which explicitly installs the latest
+          # conda-base package version during `nextstrain setup` instead of
+          # letting Micromamba resolve the package to a potentially older
+          # version.
+          #   -trs, 9 Oct 2023
+          cli-version: ">=7.3.0.post1"
+          runtime: conda
