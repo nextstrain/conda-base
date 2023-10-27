@@ -18,7 +18,7 @@ remove() {
 
 create() {
     local -a pkgs=(
-        anaconda-client
+        "anaconda-client>=1.12.0"
         boa
 
         # for manipulating recipe.yaml with jq
@@ -36,9 +36,6 @@ create() {
         csv-diff
         curl
         wget
-
-        # Temporary pin until anaconda-client fixes dependency upstream
-        "urllib3<2"
 
         # Temporary pin until boa fixes dependency upstream
         # <https://github.com/mamba-org/boa/issues/376>
