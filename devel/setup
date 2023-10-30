@@ -39,6 +39,10 @@ create() {
 
         # Temporary pin until anaconda-client fixes dependency upstream
         "urllib3<2"
+
+        # Temporary pin until boa fixes dependency upstream
+        # <https://github.com/mamba-org/boa/issues/376>
+        "ruamel.yaml<0.18.0"
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
