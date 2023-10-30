@@ -100,7 +100,8 @@ To upload the built package to anaconda.org, run:
 
 You'll need an appropriate Anaconda API token set in the `ANACONDA_TOKEN`
 environment variable.  The token must have at least the `api:read`,
-`api:write`, and `conda` scopes attached to it.
+`api:write`, and `conda` scopes attached to it.  CI uses a token issued for the
+[Nextstrain Anaconda organization](https://anaconda.org/Nextstrain/settings/access).
 
 You can adjust the label applied to the uploaded package by setting the `LABEL`
 environment variable.  By default the Git ref is used to determine the label:
