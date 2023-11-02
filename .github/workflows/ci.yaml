@@ -128,7 +128,7 @@ jobs:
           - { pathogen: avian-flu,       build-args: auspice/flu_avian_h5n1_ha.json }
           - { pathogen: ebola }
           - { pathogen: lassa }
-          - { pathogen: monkeypox }
+          - { pathogen: mpox }
           - { pathogen: mumps }
           - { pathogen: ncov,            build-args: all_regions -j 2 --profile nextstrain_profiles/nextstrain-ci }
           - { pathogen: rsv }
