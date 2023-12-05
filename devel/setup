@@ -19,7 +19,7 @@ remove() {
 create() {
     local -a pkgs=(
         "anaconda-client>=1.12.0"
-        boa
+        "boa>=0.16.0"
 
         # for manipulating recipe.yaml with jq
         yq
@@ -36,10 +36,6 @@ create() {
         csv-diff
         curl
         wget
-
-        # Temporary pin until boa fixes dependency upstream
-        # <https://github.com/mamba-org/boa/issues/376>
-        "ruamel.yaml<0.18.0"
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
