@@ -36,6 +36,10 @@ create() {
         csv-diff
         curl
         wget
+
+        # Temporary pin until boa fixes dependency upstream
+        # <https://github.com/mamba-org/boa/issues/388>
+        "conda-build<3.28.0"
     )
 
     log "Creating new env with packages: ${pkgs[*]}"
