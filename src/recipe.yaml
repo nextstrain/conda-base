@@ -42,6 +42,7 @@ requirements:
     - auspice
     - evofr
     - nextalign
+    - nextclade2
     - nextclade
     - nextstrain-cli
 
