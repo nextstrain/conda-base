@@ -77,7 +77,7 @@ requirements:
     - perl
     - ruby
     - seqkit
-    - snakemake
+    - snakemake <8
     - tsv-utils
     - unzip
     - wget
