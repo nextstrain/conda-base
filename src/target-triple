@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Get the target triple from uname.
+#
+set -euo pipefail
+
+kernel="$(uname -s)"
+machine="$(uname -m)"
+
+case "$kernel/$machine" in
+    Linux/x86_64)
+        echo "x86_64-unknown-linux-gnu";;
+
+    Darwin/x86_64)
+        echo "x86_64-apple-darwin";;
+
+    Darwin/arm64)
+        echo "aarch64-apple-darwin";;
+
+    *)
+        echo "unsupported kernel/machine: $kernel/$machine" >&2
+        exit 1;;
+esac
