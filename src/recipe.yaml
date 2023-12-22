@@ -63,6 +63,8 @@ requirements:
     #
     - awscli
     - bash
+      # Pin Biopython 1.81: https://github.com/nextstrain/augur/issues/1373
+    - biopython =1.81
     - bzip2
     - csvtk
     - curl
