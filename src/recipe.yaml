@@ -77,8 +77,6 @@ requirements:
     - ncbi-datasets-cli
     - pango_aliasor
     - perl
-      # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
-    - pulp <2.8
     - ruby
     - seqkit
     - snakemake <8
