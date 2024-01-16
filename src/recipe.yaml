@@ -36,15 +36,13 @@ requirements:
     #
     # First-party
     #
-    # XXX TODO: Install Next{align,clade} v1 alongside v2 like the Docker
-    # runtime does?  Unclear how to do this in Conda without creating entirely
-    # separate packages (e.g. nextalign1 and nextalign2).
     # XXX TODO: Include fauna?
     #
     - augur
     - auspice
     - evofr
     - nextalign
+    - nextclade2
     - nextclade
     - nextstrain-cli
 
