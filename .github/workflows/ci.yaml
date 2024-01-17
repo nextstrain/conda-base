@@ -38,10 +38,25 @@ jobs:
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     steps:
+      # First, restore Micromamba from cache in case the installation script is not reachable.
+      - name: Restore Micromamba from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~/.local/bin/micromamba
+          # Cache should remain for 7 days from last usage.
+          # <https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#usage-limits-and-eviction-policy>
+          key: ${{ runner.os }}-micromamba
+
       - name: Install Micromamba
         run: |
           curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
+
+      - name: Save Micromamba to cache
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.local/bin/micromamba
+          key: ${{ runner.os }}-micromamba
 
       - uses: actions/checkout@v3
 
