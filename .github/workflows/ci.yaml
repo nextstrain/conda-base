@@ -90,7 +90,7 @@ jobs:
     steps:
       - name: Install Micromamba
         run: |
-          curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
+          curl -fsSL --proto 'https=' https://raw.githubusercontent.com/mamba-org/micromamba-releases/main/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
 
       - uses: actions/checkout@v3
