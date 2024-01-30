@@ -51,7 +51,7 @@ jobs:
           VERSION: ${{ needs.generate-version.outputs.version }}
 
       - if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-outputs-${{ matrix.os }}
           path: |
@@ -59,7 +59,7 @@ jobs:
             locked/
 
       - if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: packages
           path: build/locked/*/nextstrain-base-*.conda
