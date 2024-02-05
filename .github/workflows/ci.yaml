@@ -17,7 +17,7 @@ jobs:
   generate-version:
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - id: set
         run: |
           echo "version=$(./devel/generate-version)" | tee -a "$GITHUB_OUTPUT"
@@ -43,7 +43,7 @@ jobs:
           curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - run: ./devel/setup
       - run: ./devel/build
@@ -93,7 +93,7 @@ jobs:
           curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
 
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
         with:
           name: packages
