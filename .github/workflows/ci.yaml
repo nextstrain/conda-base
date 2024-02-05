@@ -51,7 +51,7 @@ jobs:
           VERSION: ${{ needs.generate-version.outputs.version }}
 
       - if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-outputs-${{ matrix.os }}
           path: |
@@ -59,9 +59,9 @@ jobs:
             locked/
 
       - if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: packages
+          name: packages-${{ matrix.os }}
           path: build/locked/*/nextstrain-base-*.conda
 
       - name: Test install of nextstrain-base
@@ -94,7 +94,11 @@ jobs:
           echo ~/.local/bin >> "$GITHUB_PATH"
 
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/upload-artifact/merge@v4
+        with:
+          name: packages
+          pattern: packages-*
+      - uses: actions/download-artifact@v4
         with:
           name: packages
           path: build/locked/
