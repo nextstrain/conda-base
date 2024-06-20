@@ -45,6 +45,7 @@ requirements:
     - nextclade2
     - nextclade
     - nextstrain-cli
+    - pathogen-embed
 
     #
     # Third-party
