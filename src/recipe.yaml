@@ -80,7 +80,8 @@ requirements:
     - ruby
     - seqkit
     - snakemake <8
-    - tsv-utils >=2.2.3 hfdf4475_2
+    - tsv-utils >=2.2.3 hfdf4475_2  # [osx-64]
+    - tsv-utils >=2.2.3 h4bc722e_2  # [linux-64]
     - unzip
     - wget
     - xz
