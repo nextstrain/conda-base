@@ -73,15 +73,17 @@ requirements:
     # gzip is not yet available for arm64 on conda-forge
     # https://github.com/conda-forge/gzip-feedstock/issues/8
     # however gzip is already installed on stock macOS
-    - gzip  # [not arm64]
+    # We don't seem to support selectors, so temporarily disable gzip globally
+    # - gzip  # [not arm64]
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
     - perl
-      # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
+    # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
     - pulp <2.8
     - ruby
     - seqkit
+    # TODO: We should avoid pinning too long, this pin was placed in 2023-12-21
     - snakemake <8
     - tsv-utils
     - unzip
