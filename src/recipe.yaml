@@ -70,7 +70,10 @@ requirements:
     - epiweeks
     - git
     - google-cloud-storage
-    - gzip
+    # gzip is not yet available for arm64 on conda-forge
+    # https://github.com/conda-forge/gzip-feedstock/issues/8
+    # however gzip is already installed on stock macOS
+    - gzip  # [not arm64]
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
