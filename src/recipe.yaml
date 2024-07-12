@@ -46,6 +46,7 @@ requirements:
     - nextclade
     - nextstrain-cli
     - pathogen-embed
+    - pango_aliasor
 
     #
     # Third-party
@@ -73,7 +74,6 @@ requirements:
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
-    - pango_aliasor
     - perl
       # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
     - pulp <2.8
