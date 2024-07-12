@@ -88,6 +88,10 @@ jobs:
 
       - name: Generate summary
         run: |
+          if [[ "$(uname -m)" == "arm64" ]]; then
+              echo "Skip on arm64 until the package is published" >&2
+              exit 0
+          fi
           ./devel/download-latest
           ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
             > "$GITHUB_STEP_SUMMARY"

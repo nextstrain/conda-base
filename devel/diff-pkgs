@@ -3,7 +3,7 @@
 #
 # Diffs two .conda packages, emitting plain text output which can be treated as
 # Markdown.
-set -exuo pipefail
+set -euo pipefail
 
 source "$(dirname "$0")/_common"
 export PATH="$env/bin:$PATH"
