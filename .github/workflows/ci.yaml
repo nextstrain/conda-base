@@ -140,31 +140,40 @@ jobs:
       - generate-version
       - release
     strategy:
-      # XXX TODO: Test on multiple platforms (os, maybe arch) via the matrix too
       matrix:
-        include:
-          - { pathogen: avian-flu,       build-args: test_target }
-          - { pathogen: ebola }
-          - { pathogen: lassa }
-          - { pathogen: mumps }
-          - { pathogen: ncov,            build-args: all_regions -j 2 --profile nextstrain_profiles/nextstrain-ci }
-          - { pathogen: rsv }
-          - { pathogen: seasonal-flu,    build-args: --configfile profiles/ci/builds.yaml -p }
+        runner:
+          - ubuntu-22.04
+          - macos-12
+          - macos-14
+        pathogen:
+          - name: avian-flu
+            build-args: test_target
+          - name: ebola
+          - name: lassa
+          - name: mumps
+          - name: ncov
+            build-args: all_regions -j 2 --profile nextstrain_profiles/nextstrain-ci
+          - name: rsv
+          - name: seasonal-flu
+            build-args: --configfile profiles/ci/builds.yaml -p
 
           # Disable some pathogens until pathogen-repo-ci supports custom build directories
           # TODO: Re-enable once issue is resolved: https://github.com/nextstrain/.github/issues/63
-          # - { pathogen: mpox }
-          # - { pathogen: zika }
+          # - name: mpox
+          # - name: zika
 
-    name: test-pathogen-repo-ci (${{ matrix.pathogen }})
-    uses: nextstrain/.github/.github/workflows/pathogen-repo-ci.yaml@v0
+    name: test-pathogen-repo-ci (${{ matrix.pathogen.name }}, ${{ matrix.runner }})
+    # FIXME: based on a patch of v0 that allows build-runner and osx-arm64
+    # Can't patch directly on latest due to <https://github.com/nextstrain/.github/issues/84>
+    uses: nextstrain/.github/.github/workflows/pathogen-repo-ci.yaml@edaf9232867c336877c4cf446674059e6fdd7bbb
     with:
-      repo: nextstrain/${{ matrix.pathogen }}
-      build-args: ${{ matrix.build-args }}
+      build-runner: ${{ matrix.runner }}
+      repo: nextstrain/${{ matrix.pathogen.name }}
+      build-args: ${{ matrix.pathogen.build-args }}
       runtimes: |
         - conda
       env: |
         NEXTSTRAIN_CONDA_CHANNEL: nextstrain/label/${{ needs.generate-version.outputs.label }}
         NEXTSTRAIN_CONDA_BASE_PACKAGE: nextstrain-base ==${{ needs.generate-version.outputs.version }}
-      artifact-name: ${{ matrix.pathogen }}-outputs
+      artifact-name: ${{ matrix.pathogen.name }}-outputs
       continue-on-error: true
