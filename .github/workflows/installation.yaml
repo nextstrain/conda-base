@@ -3,6 +3,15 @@ name: Installation
 on:
   # Routinely check that the latest package is initially installable, to catch
   # issues like <https://github.com/nextstrain/monkeypox/issues/177> earlier.
+  #
+  # Hey you!  Yes, you there.  If you update this, you'll start getting the
+  # failure notifications (e.g. via email and/or on github.com) instead of
+  # @nextstrain-bot (and thus the team) getting them.  So then, update as
+  # needed, but afterwards please log in as @nextstrain-bot, disable this
+  # workflow, and then re-enable it again.¹
+  #   -trs, 15 July 2024
+  #
+  # ¹ <https://github.com/nextstrain/conda-base/actions/workflows/installation.yaml>
   schedule:
     # Every day at 17:42 UTC / 9:42 Seattle (winter) / 10:42 Seattle (summer)
     - cron: "42 17 * * *"
