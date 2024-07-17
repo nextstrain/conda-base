@@ -74,7 +74,10 @@ requirements:
     # https://github.com/conda-forge/gzip-feedstock/issues/8
     # however gzip is already installed on stock macOS
     # We don't seem to support selectors, so temporarily disable gzip globally
-    # - gzip  # [not arm64]
+    # TODO: Remove selector once gzip is available for arm64
+    # i.e. once https://github.com/conda-forge/gzip-feedstock/pull/9 is merged
+    - sel(not arm64):
+      - gzip
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
