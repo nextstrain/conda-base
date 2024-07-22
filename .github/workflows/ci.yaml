@@ -130,12 +130,15 @@ jobs:
           LABEL: ${{ needs.generate-version.outputs.label }}
 
   # Run pathogen repo CI builds with the final packages
-  test-pathogen-repo-ci:
+  # This is running pathogen-repo-ci@v0 for pathogen repos that do not conform
+  # to the standard pathogen repo structure and is not expected to be updated.
+  # Any new pathogen repos should be added to the job using the latest version
+  # of the pathogen-repo-ci below.
+  test-pathogen-repo-ci-v0:
     needs:
       - generate-version
       - release
     strategy:
-      # XXX TODO: Test on multiple platforms (os, maybe arch) via the matrix too
       matrix:
         include:
           - { pathogen: avian-flu,       build-args: test_target }
@@ -146,16 +149,41 @@ jobs:
           - { pathogen: rsv }
           - { pathogen: seasonal-flu,    build-args: --configfile profiles/ci/builds.yaml -p }
 
-          # Disable some pathogens until pathogen-repo-ci supports custom build directories
-          # TODO: Re-enable once issue is resolved: https://github.com/nextstrain/.github/issues/63
-          # - { pathogen: mpox }
-          # - { pathogen: zika }
-
-    name: test-pathogen-repo-ci (${{ matrix.pathogen }})
+    name: test-pathogen-repo-ci@v0 (${{ matrix.pathogen }})
     uses: nextstrain/.github/.github/workflows/pathogen-repo-ci.yaml@v0
     with:
       repo: nextstrain/${{ matrix.pathogen }}
       build-args: ${{ matrix.build-args }}
+      runtimes: |
+        - conda
+      env: |
+        NEXTSTRAIN_CONDA_CHANNEL: nextstrain/label/${{ needs.generate-version.outputs.label }}
+        NEXTSTRAIN_CONDA_BASE_PACKAGE: nextstrain-base ==${{ needs.generate-version.outputs.version }}
+      artifact-name: ${{ matrix.pathogen }}-outputs
+      continue-on-error: true
+
+  # Run pathogen repo CI builds with the final packages
+  # This is running pathogen-repo-ci@master for pathogen repos that _do_ follow
+  # standard pathogen repo structure and new pathogens should be added here
+  # to be supported for future updates such as testing on multiple platforms.
+  test-pathogen-repo-ci:
+    needs:
+      - generate-version
+      - release
+    strategy:
+      # XXX TODO: Test on multiple platforms (os, maybe arch) via the matrix too
+      matrix:
+        pathogen:
+          - dengue
+          - measles
+          - mpox
+          - seasonal-cov
+          - zika
+
+    name: test-pathogen-repo-ci (${{ matrix.pathogen }})
+    uses: nextstrain/.github/.github/workflows/pathogen-repo-ci.yaml@master
+    with:
+      repo: nextstrain/${{ matrix.pathogen }}
       runtimes: |
         - conda
       env: |
