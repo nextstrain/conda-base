@@ -15,7 +15,7 @@ case "$kernel/$machine" in
         echo "osx-64";;
 
     Darwin/arm64)
-        echo "osx-64";;
+        echo "osx-arm64";;
 
     *)
         echo "unsupported kernel/machine: $kernel/$machine" >&2
