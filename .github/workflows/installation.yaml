@@ -3,15 +3,6 @@ name: Installation
 on:
   # Routinely check that the latest package is initially installable, to catch
   # issues like <https://github.com/nextstrain/monkeypox/issues/177> earlier.
-  #
-  # Hey you!  Yes, you there.  If you update this, you'll start getting the
-  # failure notifications (e.g. via email and/or on github.com) instead of
-  # @nextstrain-bot (and thus the team) getting them.  So then, update as
-  # needed, but afterwards please log in as @nextstrain-bot, disable this
-  # workflow, and then re-enable it again.¹
-  #   -trs, 15 July 2024
-  #
-  # ¹ <https://github.com/nextstrain/conda-base/actions/workflows/installation.yaml>
   schedule:
     # Every day at 17:42 UTC / 9:42 Seattle (winter) / 10:42 Seattle (summer)
     - cron: "42 17 * * *"
@@ -47,3 +38,65 @@ jobs:
           #   -trs, 9 Oct 2023
           cli-version: ">=7.3.0.post1"
           runtime: conda
+
+  # Surface failures via GitHub issues
+  failure-reporting:
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create or close issue
+        run: |
+          # Search for issues opened by this job.
+          matching_issues=$(gh issue list \
+            --state open \
+            --author '@me' \
+            --json 'number,title' \
+            --jq 'map(select(.title == "${{ env.title }}") | .number)')
+
+          # Handle the case of multiple matching issues, even though this
+          # shouldn't happen under normal circumstances.
+          if [[ $(jq length <<<"$matching_issues") -gt 1 ]]; then
+            echo "ERROR: Multiple matching issues found:" >&2
+            for issue in $(jq -r '.[]' <<<"$matching_issues"); do
+                echo "- https://github.com/${{ github.repository }}/issues/$issue" >&2
+            done
+            echo "This must be handled manually." >&2
+            exit 1
+          fi
+
+          existing_issue=$(jq -r '.[0] | values' <<<"$matching_issues")
+
+          if [[ "${{ needs.test.result }}" == "failure" ]]; then
+            if  [[ -z "$existing_issue" ]]; then
+              echo "New failure detected. Creating issue..."
+              new_issue=$(gh issue create \
+                --title "$title" \
+                --body "$body")
+              echo "Created issue: $new_issue"
+            else
+              echo "Open issue already exists: https://github.com/${{ github.repository }}/issues/$existing_issue"
+            fi
+          fi
+
+          if [[ "${{ needs.test.result }}" == "success" ]]; then
+            if [[ -n "$existing_issue" ]]; then
+              echo "Closing issue https://github.com/${{ github.repository }}/issues/$existing_issue"
+              gh issue close "$existing_issue" \
+                --comment "Installation is successful as of https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            else
+              echo "No open issue to be closed."
+            fi
+          fi
+
+        env:
+          title: Installation failure
+          body: |
+            _Automatically created by [installation.yaml](https://github.com/${{ github.repository }}/blob/${{ github.sha }}/.github/workflows/installation.yaml)_
+
+            An installation check has failed: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            This issue will be automatically closed upon the next successful run of the workflow.
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN_NEXTSTRAIN_BOT_REPO }}
