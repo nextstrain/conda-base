@@ -87,3 +87,15 @@ requirements:
     - xz
     - zip
     - zstd
+
+    # Avoid a newer minimum glibc version introduced by c-ares 1.33.0¹.  This
+    # pin keeps the previous glibc requirement of ≥2.17 instead of ≥2.28.²
+    # Eventually this pin will become unworkable, but we can keep it for now.
+    #
+    # Note that using run_constrained doesn't work (at least on the face of
+    # it), potentially (?) because of our two-step build process.
+    #   -trs, 16 Sept 2024
+    #
+    # ¹ <https://github.com/conda-forge/c-ares-feedstock/pull/38>
+    # ² <https://github.com/nextstrain/conda-base/issues/92>
+    - c-ares <1.33.0
