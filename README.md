@@ -71,7 +71,7 @@ To build this package locally, run:
 
 The final built package will be written to
 `build/locked/<arch>/nextstrain-base-*.conda`, where `<arch>` is a Conda
-subdir, e.g. `linux-64` or `osx-64`.
+subdir, i.e. `linux-64`, `osx-64` or `osx-arm64`.
 
 [CI][] builds store the entire `build/` and `locked/` directories as an
 artifact attached to each CI run.  You can download the artifacts to inspect
