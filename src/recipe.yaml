@@ -68,7 +68,9 @@ requirements:
     - curl
     - epiweeks
     - git
+    - gawk
     - google-cloud-storage
+    - grep
     - gzip
     - iqtree >=2
     - jq
@@ -78,9 +80,11 @@ requirements:
       # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
     - pulp <2.8
     - ruby
+    - sed
     - seqkit
     - snakemake <8
     - sqlite
+    - tar
     - tsv-utils
     - unzip
     - wget
