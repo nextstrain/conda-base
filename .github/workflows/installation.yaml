@@ -45,7 +45,7 @@ jobs:
 
   # Surface failures via GitHub issues
   failure-reporting:
-    if: ${{ always() }}
+    if: ${{ always() && github.ref_name == github.event.repository.default_branch }}
     runs-on: ubuntu-latest
     needs: [test]
     steps:
