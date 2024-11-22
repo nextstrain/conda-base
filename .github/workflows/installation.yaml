@@ -7,6 +7,10 @@ on:
     # Every day at 17:42 UTC / 9:42 Seattle (winter) / 10:42 Seattle (summer)
     - cron: "42 17 * * *"
 
+  pull_request:
+    paths:
+      - .github/workflows/installation.yaml
+
   workflow_dispatch:
 
 jobs:
@@ -41,7 +45,7 @@ jobs:
 
   # Surface failures via GitHub issues
   failure-reporting:
-    if: ${{ always() }}
+    if: ${{ always() && github.ref_name == github.event.repository.default_branch }}
     runs-on: ubuntu-latest
     needs: [test]
     steps:
