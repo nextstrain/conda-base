@@ -42,7 +42,7 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - macos-12
+          - macos-13
 
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
