@@ -72,7 +72,7 @@ requirements:
     - google-cloud-storage
     - grep
     - gzip
-    - iqtree >=2
+    - iqtree [build="^(?!h49642b6_3).*$"]
     - jq
     - ncbi-datasets-cli
     - pango_aliasor
