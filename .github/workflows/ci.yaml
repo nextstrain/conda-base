@@ -87,6 +87,7 @@ jobs:
             nextstrain-base
 
       - name: Generate summary
+        continue-on-error: true
         run: |
           ./devel/download-latest
           ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
