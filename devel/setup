@@ -25,8 +25,8 @@ create() {
         yq
 
         # for extracting files from .conda packages
+        p7zip
         tar
-        unzip
         zstd
 
         # to get gnu `date` on macOS

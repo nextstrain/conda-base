@@ -22,7 +22,7 @@ main() {
     package="$1"
     file="$2"
 
-    unzip -p "$package" "info-$(basename "$package" .conda).tar.zst" \
+    7z e -so "$package" "info-$(basename "$package" .conda).tar.zst" \
         | unzstd --stdout \
         | tar --extract --to-stdout "info/$file"
 }

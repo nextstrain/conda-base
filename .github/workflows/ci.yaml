@@ -42,7 +42,8 @@ jobs:
       matrix:
         os:
           - ubuntu-22.04
-          - macos-13
+          - macos-13 # x86_64
+          - macos-14 # arm64
 
     name: build and test (os=${{ matrix.os }})
     runs-on: ${{ matrix.os }}
@@ -86,6 +87,7 @@ jobs:
             nextstrain-base
 
       - name: Generate summary
+        continue-on-error: true
         run: |
           ./devel/download-latest
           ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
