@@ -62,6 +62,11 @@ jobs:
             echo "success=true" >> "$GITHUB_ENV"
           fi
 
+      - name: Extract workflow link
+        run: |
+          workflow_path=$(echo "${{ github.workflow_ref }}" | sed -E 's|^.*/(\.github/workflows/[^@]+)@\S*$|\1|')
+          echo "workflow_link=https://github.com/${{ github.repository }}/blob/${{ github.sha }}/$workflow_path" >> "$GITHUB_ENV"
+
       - name: Create or close issue
         run: |
           # Search for issues opened by this job.
@@ -100,7 +105,7 @@ jobs:
             if [[ -n "$existing_issue" ]]; then
               echo "Closing issue https://github.com/${{ github.repository }}/issues/$existing_issue"
               gh issue close "$existing_issue" \
-                --comment "Installation is successful as of https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                --comment "Workflow is successful as of https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             else
               echo "No open issue to be closed."
             fi
@@ -108,9 +113,9 @@ jobs:
 
         env:
           body: |
-            _Automatically created by [installation.yaml](https://github.com/${{ github.repository }}/blob/${{ github.sha }}/.github/workflows/installation.yaml)_
+            Automatically created by the workflow [${{ github.workflow }}](${{ env.workflow_link }}) which indicated failure on [run ${{ github.run_id }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
 
-            An installation check has failed: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            See the workflow run for details and make changes as necessary.
 
             This issue will be automatically closed upon the next successful run of the workflow.
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN_NEXTSTRAIN_BOT_REPO }}
