@@ -46,7 +46,8 @@ jobs:
   report-failure:
     if: ${{ always() && github.ref_name == github.event.repository.default_branch }}
     needs: [test]
-    uses: nextstrain/.github/.github/workflows/report-failure.yaml
+    # FIXME: drop the branch tag after merging https://github.com/nextstrain/.github/pull/121
+    uses: nextstrain/.github/.github/workflows/report-failure.yaml@victorlin/report-failure
     with:
       failure: ${{ needs.test.result == 'failure' }}
       success: ${{ needs.test.result == 'success' }}
