@@ -51,6 +51,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set variables
+        run: |
+          echo "title='Installation failure'" >> "$GITHUB_ENV"
+
+          if [[ "${{ needs.test.result }}" == "failure" ]]; then
+            echo "failure=true" >> "$GITHUB_ENV"
+          fi
+          if [[ "${{ needs.test.result }}" == "success" ]]; then
+            echo "success=true" >> "$GITHUB_ENV"
+          fi
+
       - name: Create or close issue
         run: |
           # Search for issues opened by this job.
@@ -73,11 +84,11 @@ jobs:
 
           existing_issue=$(jq -r '.[0] | values' <<<"$matching_issues")
 
-          if [[ "${{ needs.test.result }}" == "failure" ]]; then
+          if [[ "${{ env.failure }}" == "true" ]]; then
             if  [[ -z "$existing_issue" ]]; then
               echo "New failure detected. Creating issue..."
               new_issue=$(gh issue create \
-                --title "$title" \
+                --title "${{ env.title }}" \
                 --body "$body")
               echo "Created issue: $new_issue"
             else
@@ -85,7 +96,7 @@ jobs:
             fi
           fi
 
-          if [[ "${{ needs.test.result }}" == "success" ]]; then
+          if [[ "${{ env.success }}" == "true" ]]; then
             if [[ -n "$existing_issue" ]]; then
               echo "Closing issue https://github.com/${{ github.repository }}/issues/$existing_issue"
               gh issue close "$existing_issue" \
@@ -96,7 +107,6 @@ jobs:
           fi
 
         env:
-          title: Installation failure
           body: |
             _Automatically created by [installation.yaml](https://github.com/${{ github.repository }}/blob/${{ github.sha }}/.github/workflows/installation.yaml)_
 
