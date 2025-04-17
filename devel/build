@@ -49,6 +49,9 @@ lock() {
     # somehow or leverage libmamba directly to obtain it…
     #   -14 Oct 2022
     log "Updating $repo/locked/recipe.yaml"
+    # Filtering out the "_x86_64-microarch-level" dependency as it causes
+    # errors when installing with micromamba
+    # See <https://github.com/nextstrain/conda-base/issues/105>
     yq \
         --yaml-roundtrip \
         --slurpfile rendered <(rendered-recipe | yaml-to-json) \
@@ -57,7 +60,8 @@ lock() {
             | .build.string = $rendered[0].build.string + "_locked"
             | .requirements.run = (
                   $rendered[0].requirements.run
-                | map(split(" ") | "\(.[0]) ==\(.[1]) \(.[2])"))
+                | map(select(. | startswith("_x86_64-microarch-level") | not)
+                    | split(" ") | "\(.[0]) ==\(.[1]) \(.[2])"))
         ' \
         < src/recipe.yaml \
         > locked/recipe.yaml
