@@ -52,6 +52,7 @@ jobs:
         run: |
           curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
+      - run: micromamba --version
 
       - uses: actions/checkout@v4
 
