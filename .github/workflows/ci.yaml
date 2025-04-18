@@ -52,6 +52,7 @@ jobs:
         run: |
           curl -fsSL --proto 'https=' https://micro.mamba.pm/install.sh | bash
           echo ~/.local/bin >> "$GITHUB_PATH"
+      - run: micromamba --version
 
       - uses: actions/checkout@v4
 
@@ -160,6 +161,7 @@ jobs:
       env: |
         NEXTSTRAIN_CONDA_CHANNEL: nextstrain/label/${{ needs.generate-version.outputs.label }}
         NEXTSTRAIN_CONDA_BASE_PACKAGE: nextstrain-base ==${{ needs.generate-version.outputs.version }}
+        NEXTSTRAIN_CONDA_MICROMAMBA_VERSION: 2.1.0
       artifact-name: ${{ matrix.pathogen }}-outputs
       continue-on-error: true
 
@@ -195,5 +197,6 @@ jobs:
       env: |
         NEXTSTRAIN_CONDA_CHANNEL: nextstrain/label/${{ needs.generate-version.outputs.label }}
         NEXTSTRAIN_CONDA_BASE_PACKAGE: nextstrain-base ==${{ needs.generate-version.outputs.version }}
+        NEXTSTRAIN_CONDA_MICROMAMBA_VERSION: 2.1.0
       artifact-name: ${{ matrix.pathogen }}-outputs
       continue-on-error: true

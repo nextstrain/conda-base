@@ -60,7 +60,7 @@ requirements:
     # systems with an older bash.  This is similar to how our Docker runtime
     # image includes its own bash too.
     #
-    - awscli
+    - awscli >=2
     - bash
     - bzip2
     - csvtk
