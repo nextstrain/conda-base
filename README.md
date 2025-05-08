@@ -21,10 +21,10 @@ unsuitable for use in a user-managed Conda environment.
 
 ## How it works
 
-The meta-package source recipe is in `src/recipe.yaml`.  This is a [Boa recipe
-spec](https://boa-build.readthedocs.io/en/latest/recipe_spec.html).  It defines
-our runtime's direct dependencies, typically without version restrictions
-(pins) or with only loose pinning as necessary.
+The meta-package source recipe is in `src/recipe.yaml`.  This is a
+[rattler-build recipe spec][].  It defines our runtime's direct dependencies,
+typically without version restrictions (pins) or with only loose pinning as
+necessary.
 
 A two-pass build process is used to produce the final package.
 
@@ -41,6 +41,8 @@ As the fully locked dependency trees are platform-specific, [CI][] produces
 packages for both Linux and macOS (i.e. for Conda's `linux-64` and `osx-64`
 subdirs).
 
+[rattler-build recipe spec]: https://rattler.build/latest/reference/recipe_file/
+
 
 ## Developing
 
@@ -49,7 +51,7 @@ production releases to happen via CI so packages are built for both Linux and
 macOS._
 
 First, setup a Conda environment for development in `.dev-env/` so that
-[Boa](https://boa-build.readthedocs.io) is available.
+[rattler-build](https://rattler.build) is available.
 
     ./devel/setup
 
@@ -134,8 +136,6 @@ overwritten on each build and not tracked in version control.
 `build/` contains build outputs not tracked in version control.
 
 `devel/` contains programs for development of this package.
-
-`.condarc` is used to specify configuration (e.g. channels) for `boa build`.
 
 
 ## History

@@ -1,38 +1,38 @@
 package:
   name: nextstrain-base
-  version: "{{ environ['VERSION'] }}"
+  version: ${{ env.get("VERSION") }}
 
 build:
   number: 0
-  #
-  # XXX TODO: If Boa ever supports conda-build's "pin_depends: strict" here¹, I
-  # think it could replace our entire two-pass build process!  Unfortunately,
-  # conda-build is so much slower than Boa that the more complicated build
-  # process is worth it.
-  #   -trs, 14 Oct 2022
-  #
-  # ¹ <https://github.com/mamba-org/boa/issues/300>
-  #
-  #pin_depends: strict
+
+  # If we were using conda-build, we'd use "pin_depends: strict" here and
+  # replace our entire two-pass build process!  But using rattler-build lets us
+  # get even more specific pinnings (e.g. with channels) and a bit more control
+  # over the build process.  It's output is also a fair bit easier to read.
+  #   -trs, 8 May 2025
 
 source:
   path: .
 
 about:
-  home: https://nextstrain.org
-  doc_url: https://docs.nextstrain.org/
-  dev_url: https://github.com/nextstrain/conda-base
+  homepage: https://nextstrain.org
+  documentation: https://docs.nextstrain.org/
+  repository: https://github.com/nextstrain/conda-base
   summary: Base Nextstrain runtime (meta-package)
   description: >
     This meta-package depends on all the other packages needed for a base
     Nextstrain runtime installed as a Conda environment.  As the
     nextstrain/base image is to Nextstrain CLI's Docker runtime, this
     nextstrain-base package is to Nextstrain CLI's Conda runtime.
-  license: >
-    The license for this meta-package is MIT; individual tools vary.
 
 requirements:
-  run:
+  # Declare "host" requirements (i.e. build requirements for the target arch)
+  # instead of "run" requirements because rattler-build's rendered recipe only
+  # includes the full solve for build and host requirements and not run
+  # requirements.  In devel/build, we move the resolved host requirements into
+  # the package's run requirements.
+  #   -trs, 8 May 2025
+  host:
     #
     # First-party
     #
