@@ -4,16 +4,7 @@ package:
 
 build:
   number: 0
-  #
-  # XXX TODO: If Boa ever supports conda-build's "pin_depends: strict" here¹, I
-  # think it could replace our entire two-pass build process!  Unfortunately,
-  # conda-build is so much slower than Boa that the more complicated build
-  # process is worth it.
-  #   -trs, 14 Oct 2022
-  #
-  # ¹ <https://github.com/mamba-org/boa/issues/300>
-  #
-  #pin_depends: strict
+  pin_depends: strict
 
 source:
   path: .

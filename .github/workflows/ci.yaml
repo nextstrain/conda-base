@@ -67,13 +67,12 @@ jobs:
           name: build-outputs-${{ matrix.os }}
           path: |
             build/
-            locked/
 
       - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: packages-${{ matrix.os }}
-          path: build/locked/*/nextstrain-base-*.conda
+          path: build/*/nextstrain-base-*.conda
 
       - name: Test install of nextstrain-base
         run: |
@@ -82,7 +81,7 @@ jobs:
             --prefix ./test-env             \
             --strict-channel-priority       \
             --override-channels             \
-            --channel ./build/locked        \
+            --channel ./build/              \
             --channel conda-forge           \
             --channel bioconda              \
             nextstrain-base
@@ -91,7 +90,7 @@ jobs:
         continue-on-error: true
         run: |
           ./devel/download-latest
-          ./devel/diff-pkgs nextstrain-base-*.conda build/locked/*/nextstrain-base-*.conda \
+          ./devel/diff-pkgs nextstrain-base-*.conda build/*/nextstrain-base-*.conda \
             > "$GITHUB_STEP_SUMMARY"
 
   release:
@@ -113,7 +112,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: packages
-          path: build/locked/
+          path: build/
 
       - run: ./devel/setup
 

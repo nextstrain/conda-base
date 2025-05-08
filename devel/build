@@ -34,62 +34,26 @@ main() {
 
     clean
     build src "$@"
-    lock
-    build locked "$@"
 }
 
 clean() {
-    log "Removing $repo/build and $repo/locked"
-    rm -rf ./build ./locked
+    log "Removing $repo/build"
+    rm -rf ./build
 }
 
 build() {
     local recipe_dir="$1"
     shift
 
-    log "Building $repo/$recipe_dir into $repo/build/$recipe_dir"
+    log "Building $repo/$recipe_dir into $repo/build"
 
-    # Boa's configuration framework is not quite fully-baked: it's only minimally
-    # configurable with env vars and reads only ~/.condarc, no other RC files.  Lie
-    # about HOME so we can configure channels properly for the build.
-    HOME="$repo" boa build --pkg-format 2 --croot "./build/$recipe_dir" "$recipe_dir" "$@"
-}
-
-lock() {
-    log "Copying $repo/src to $repo/locked"
-    cp -a src locked
-
-    # XXX TODO: It would be extra nice to prepend channel specifiers to each
-    # locked dep (e.g. conda-forge::nextstrain-cli ==x.y.z hbadcafe_0_locked).
-    # Boa has that info at build time, but it doesn't seem to make it into the
-    # rendered recipe included in the package.  Would have to reach into Boa
-    # somehow or leverage libmamba directly to obtain it…
-    #   -14 Oct 2022
-    log "Updating $repo/locked/recipe.yaml"
-    yq \
-        --yaml-roundtrip \
-        --slurpfile rendered <(rendered-recipe | yaml-to-json) \
-        '
-              .package.version = $rendered[0].package.version
-            | .build.string = $rendered[0].build.string + "_locked"
-            | .requirements.run = (
-                  $rendered[0].requirements.run
-                | map(split(" ") | "\(.[0]) ==\(.[1]) \(.[2])"))
-        ' \
-        < src/recipe.yaml \
-        > locked/recipe.yaml
-}
-
-rendered-recipe() {
-    # It would be really nice if we could use `boa render` (or `conda render`)
-    # for this, but we can't seem to.  Instead, extract the rendered recipe
-    # from the package built in the first pass.
-    local package="$(echo ./build/src/*/nextstrain-base-"$VERSION"-!(*_locked).conda)"
-    ./devel/extract-pkg-info "$package" recipe/recipe.yaml
-}
-
-yaml-to-json() {
-    yq '.'
+    # Lie about HOME so we can configure channels properly for the build via
+    # .condarc and isolate ourselves from the user's own .condarc.
+    HOME="$repo" conda build \
+       --package-format conda \
+       --croot ./build \
+       "$recipe_dir" \
+       "$@"
 }
 
 main "$@"
