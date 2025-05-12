@@ -11,7 +11,7 @@ main() {
         --token "$ANACONDA_TOKEN" \
         upload \
             --label "${LABEL:-$(./devel/label-for-ref)}" \
-            ./build/locked/*/nextstrain-base-*_locked.conda
+            ./build/*/nextstrain-base-*.conda
 }
 
 main "$@"

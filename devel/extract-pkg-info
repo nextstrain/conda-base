@@ -6,7 +6,7 @@
 #
 # Example:
 #
-#     ./devel/extract-pkg-info build/locked/*/nextstrain-base-*.conda recipe/recipe.yaml
+#     ./devel/extract-pkg-info build/*/nextstrain-base-*.conda recipe/recipe.yaml
 #
 set -euo pipefail
 

@@ -21,25 +21,18 @@ unsuitable for use in a user-managed Conda environment.
 
 ## How it works
 
-The meta-package source recipe is in `src/recipe.yaml`.  This is a [Boa recipe
-spec](https://boa-build.readthedocs.io/en/latest/recipe_spec.html).  It defines
-our runtime's direct dependencies, typically without version restrictions
-(pins) or with only loose pinning as necessary.
-
-A two-pass build process is used to produce the final package.
-
-In the first pass, the source recipe is built into a package in `build/src/`.
-This package _does not_ lock its dependency tree.  Crucially, however, such a
-tree is still resolved during the build and recorded as package metadata.
-
-In the second pass, the recorded locked dependency tree is extracted from the
-first pass and substituted into the source recipe to produce the locked recipe,
-`locked/recipe.yaml`.  The locked recipe is then built into a package in
-`build/locked/`.  This final package now _does_ fully lock its dependency tree.
+The meta-package source recipe is in `src/meta.yaml`.  This is a [conda-build
+recipe spec][].  It defines our runtime's direct dependencies, typically
+without version restrictions (pins) or with only loose pinning as necessary.
+The recipe declares [`pin_depends: strict`][] in order to fully lock its
+dependency tree at package build time.
 
 As the fully locked dependency trees are platform-specific, [CI][] produces
 packages for both Linux and macOS (i.e. for Conda's `linux-64` and `osx-64`
 subdirs).
+
+[conda-build recipe spec]: https://docs.conda.io/projects/conda-build/en/stable/resources/define-metadata.html
+[`pin_depends: strict`]: https://docs.conda.io/projects/conda-build/en/latest/resources/define-metadata.html#pin-runtime-dependencies
 
 
 ## Developing
@@ -49,7 +42,7 @@ production releases to happen via CI so packages are built for both Linux and
 macOS._
 
 First, setup a Conda environment for development in `.dev-env/` so that
-[Boa](https://boa-build.readthedocs.io) is available.
+[conda-build](https://docs.conda.io/projects/conda-build/) is available.
 
     ./devel/setup
 
@@ -70,12 +63,12 @@ To build this package locally, run:
     ./devel/build
 
 The final built package will be written to
-`build/locked/<arch>/nextstrain-base-*.conda`, where `<arch>` is a Conda
-subdir, i.e. `linux-64`, `osx-64` or `osx-arm64`.
+`build/<arch>/nextstrain-base-*.conda`, where `<arch>` is a Conda subdir, i.e.
+`linux-64`, `osx-64` or `osx-arm64`.
 
-[CI][] builds store the entire `build/` and `locked/` directories as an
-artifact attached to each CI run.  You can download the artifacts to inspect
-the built packages or install them.
+[CI][] builds store the entire `build/` directory as an artifact attached to
+each CI run.  You can download the artifacts to inspect the built packages or
+install them.
 
 [CI]: https://github.com/nextstrain/conda-base/actions/workflows/ci.yaml
 
@@ -89,7 +82,7 @@ To install the built package into a new environment, run:
       --override-channels                     \
       --channel conda-forge                   \
       --channel bioconda                      \
-      --channel ./build/locked                \
+      --channel ./build/                      \
       nextstrain-base
 
 ### Uploading
@@ -124,18 +117,15 @@ artifacts.
 ### Repository layout
 
 `src/` contains the package recipe source.  Any files in this directory will be
-automatically included in the built package.  (`recipe.yaml` doesn't live in
-the top-level of the repo, and thus `src/` exists, to avoid including the whole
+automatically included in the built package.  (`meta.yaml` doesn't live in the
+top-level of the repo, and thus `src/` exists, to avoid including the whole
 repo in each built package.)
-
-`locked/` contains the package recipe source after requirements locking.  It is
-overwritten on each build and not tracked in version control.
 
 `build/` contains build outputs not tracked in version control.
 
 `devel/` contains programs for development of this package.
 
-`.condarc` is used to specify configuration (e.g. channels) for `boa build`.
+`.condarc` is used to specify configuration (e.g. channels) for `conda build`.
 
 
 ## History
