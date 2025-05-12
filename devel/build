@@ -15,6 +15,23 @@ main() {
     CONDA_SUBDIR="${CONDA_SUBDIR:-$(./devel/conda-subdir)}"
     export CONDA_SUBDIR
 
+    # Set CONDA_OVERRIDE_ARCHSPEC if it's unset or empty.
+    if [[ -z "${CONDA_OVERRIDE_ARCHSPEC:-}" ]]; then
+        # Unset CONDA_OVERRIDE_ARCHSPEC if it's set but empty.  An empty
+        # archspec override *omits* the virtual __archspec package from
+        # solving, and we don't want to do that.
+        unset CONDA_OVERRIDE_ARCHSPEC
+
+        case "$CONDA_SUBDIR" in
+            linux-64|osx-64)
+                # Avoid x86_64-microarch-level versions >1 for greatest
+                # compatibility
+                export CONDA_OVERRIDE_ARCHSPEC=x86_64;;
+
+            # Other subdirs use their default.
+        esac
+    fi
+
     clean
     build src
     lock
