@@ -53,6 +53,7 @@ requirements:
     #
     - awscli >=2
     - bash
+    - bio >=1.8.0
     - bzip2
     - csvtk
     - coreutils
