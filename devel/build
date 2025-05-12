@@ -33,9 +33,9 @@ main() {
     fi
 
     clean
-    build src
+    build src "$@"
     lock
-    build locked
+    build locked "$@"
 }
 
 clean() {
