@@ -67,6 +67,11 @@ requirements:
     - iqtree >=2
     - jq
     - ncbi-datasets-cli
+
+    # XXX TODO: Remove when <https://github.com/ncbi/datasets/issues/490> is resolved.
+    #   -trs, 20 May 2025
+    - ncbi-datasets-cli 18.0.2 # [osx and arm64]
+
     - pango_aliasor
     - perl
       # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
