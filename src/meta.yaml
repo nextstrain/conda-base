@@ -73,6 +73,9 @@ requirements:
     - sed
     - seqkit
     - snakemake >=9.6.2,<10
+    - snakemake-storage-plugin-http
+    - snakemake-storage-plugin-s3
+    - snakemake-storage-plugin-gcs
     - sqlite
     - tar
     - tsv-utils
