@@ -61,7 +61,6 @@ requirements:
     - epiweeks
     - git
     - gawk
-    - google-cloud-storage
     - grep
     - gzip
     - iqtree >=2
@@ -75,7 +74,6 @@ requirements:
     - snakemake >=9.0.0,<10
     - snakemake-storage-plugin-http
     - snakemake-storage-plugin-s3
-    - snakemake-storage-plugin-gcs
     - sqlite
     - tar
     - tsv-utils
