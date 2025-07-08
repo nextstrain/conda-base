@@ -72,6 +72,7 @@ requirements:
     #   -trs, 20 May 2025
     - ncbi-datasets-cli 18.0.2 # [osx and arm64]
 
+    - openpyxl
     - pango_aliasor
     - perl
       # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
