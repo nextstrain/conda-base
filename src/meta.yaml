@@ -68,6 +68,7 @@ requirements:
     - ncbi-datasets-cli
     - pango_aliasor
     - perl
+    - pyarrow
     - ruby
     - sed
     - seqkit
