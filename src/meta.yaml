@@ -66,6 +66,7 @@ requirements:
     - iqtree >=2,<3
     - jq
     - ncbi-datasets-cli
+    - openpyxl
     - pango_aliasor
     - perl
     - pyarrow
