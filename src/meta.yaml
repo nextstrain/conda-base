@@ -61,25 +61,19 @@ requirements:
     - epiweeks
     - git
     - gawk
-    - google-cloud-storage
     - grep
     - gzip
-    - iqtree >=2
+    - iqtree >=2,<3
     - jq
     - ncbi-datasets-cli
-
-    # XXX TODO: Remove when <https://github.com/ncbi/datasets/issues/490> is resolved.
-    #   -trs, 20 May 2025
-    - ncbi-datasets-cli 18.0.2 # [osx and arm64]
-
     - pango_aliasor
     - perl
-      # Pin pulp <2.8 for snakemake: https://github.com/snakemake/snakemake/issues/2607
-    - pulp <2.8
     - ruby
     - sed
     - seqkit
-    - snakemake <8
+    - snakemake >=9.0.0,<10
+    - snakemake-storage-plugin-http
+    - snakemake-storage-plugin-s3
     - sqlite
     - tar
     - tsv-utils
