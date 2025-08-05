@@ -63,7 +63,7 @@ requirements:
     - gawk
     - grep
     - gzip
-    - iqtree >=2,<3
+    - iqtree >=3
     - jq
     - ncbi-datasets-cli
     - pango_aliasor
