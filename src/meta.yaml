@@ -23,13 +23,15 @@ about:
     The license for this meta-package is MIT; individual tools vary.
 
 requirements:
+  build:
+    - python =3.11
+    - pip
   run:
     #
     # First-party
     #
     # XXX TODO: Include fauna?
     #
-    - augur
     - auspice
     - evofr
     - nextalign
