@@ -32,6 +32,15 @@ main() {
         esac
     fi
 
+    # Set CONDA_OVERRIDE_GLIBC if it's unset or empty.
+    if [[ -z "${CONDA_OVERRIDE_GLIBC:-}" ]]; then
+        case "$CONDA_SUBDIR" in
+            linux-64)
+                # Support glibc 2.17 for greatest compatibility
+                export CONDA_OVERRIDE_GLIBC=2.17;;
+        esac
+    fi
+
     clean
     build src "$@"
 }
