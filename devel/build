@@ -41,8 +41,20 @@ main() {
         esac
     fi
 
+    info
     clean
     build src "$@"
+}
+
+conda_() {
+    # Lie about HOME so we can configure channels properly for the build via
+    # .condarc and isolate ourselves from the user's own .condarc.
+    HOME="$repo" conda "$@"
+}
+
+info() {
+    log 'Reporting `conda info` for logs'
+    conda_ info
 }
 
 clean() {
@@ -56,9 +68,7 @@ build() {
 
     log "Building $repo/$recipe_dir into $repo/build"
 
-    # Lie about HOME so we can configure channels properly for the build via
-    # .condarc and isolate ourselves from the user's own .condarc.
-    HOME="$repo" conda build \
+    conda_ build \
        --package-format conda \
        --croot ./build \
        "$recipe_dir" \
