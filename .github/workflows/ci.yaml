@@ -62,14 +62,14 @@ jobs:
           VERSION: ${{ needs.generate-version.outputs.version }}
 
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: build-outputs-${{ matrix.os }}
           path: |
             build/
 
       - if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages-${{ matrix.os }}
           path: build/*/nextstrain-base-*.conda
@@ -105,7 +105,7 @@ jobs:
           echo ~/.local/bin >> "$GITHUB_PATH"
 
       - uses: actions/checkout@v5
-      - uses: actions/upload-artifact/merge@v4
+      - uses: actions/upload-artifact/merge@v5
         with:
           name: packages
           pattern: packages-*
