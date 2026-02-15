@@ -31,7 +31,9 @@ requirements:
     #
     - augur
     - auspice
-    - evofr
+    # Pin minimum version for correct dependency resolution
+    # otherwise evofr will get downgraded to v0.1.18 build 0
+    - evofr >=0.1.19
     - nextalign
     - nextclade2
     - nextclade
@@ -66,8 +68,10 @@ requirements:
     - iqtree >=3
     - jq
     - ncbi-datasets-cli
+    - openpyxl
     - pango_aliasor
     - perl
+    - pyarrow
     - ruby
     - sed
     - seqkit
