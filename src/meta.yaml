@@ -71,7 +71,7 @@ requirements:
     - ruby
     - sed
     - seqkit
-    - snakemake <9.17.0
+    - snakemake
     - snakemake-storage-plugin-http
     - snakemake-storage-plugin-s3
     - sqlite
