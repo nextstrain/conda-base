@@ -82,4 +82,4 @@ requirements:
     - xlrd
     - xz
     - zip
-    - zstd
+    - zstandard
