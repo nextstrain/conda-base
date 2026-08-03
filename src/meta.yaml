@@ -58,6 +58,7 @@ requirements:
     - csvtk
     - coreutils
     - curl
+    - diamond
     - epiweeks
     - git
     - gawk
