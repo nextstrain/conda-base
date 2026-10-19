@@ -30,7 +30,7 @@ requirements:
     # XXX TODO: Include fauna?
     #
     - augur
-    - auspice
+    - auspice <=3.0.0
     - evofr
     - nextalign
     - nextclade2
