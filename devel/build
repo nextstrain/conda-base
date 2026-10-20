@@ -68,7 +68,7 @@ build() {
 
     log "Building $repo/$recipe_dir into $repo/build"
 
-    conda_ build \
+    conda_ build --debug \
        --package-format conda \
        --croot ./build \
        "$recipe_dir" \
