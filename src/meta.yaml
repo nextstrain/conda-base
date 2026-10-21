@@ -69,6 +69,7 @@ requirements:
     - ncbi-datasets-cli
     - pango_aliasor
     - perl
+    - python
     - ruby
     - sed
     - seqkit
