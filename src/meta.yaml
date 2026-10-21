@@ -69,6 +69,9 @@ requirements:
     - ncbi-datasets-cli
     - pango_aliasor
     - perl
+    # Pin pip to minimum version for CA certificate compromise
+    # <https://discuss.python.org/t/information-for-python-users-regarding-emudhra-emsign-ca-certificate-security-incident/109576>
+    - pip >=26.2.2
     - ruby
     - sed
     - seqkit
