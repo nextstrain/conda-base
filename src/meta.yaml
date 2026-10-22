@@ -37,6 +37,7 @@ requirements:
     - nextclade
     - nextstrain-cli
     - pathogen-embed
+    - treeknit
 
     #
     # Third-party
