@@ -86,6 +86,9 @@ jobs:
             --channel bioconda              \
             nextstrain-base
 
+      - name: Test treetime1 in nextstrain-base
+        run: ./test-env/bin/treetime1 --version
+
       - name: Generate summary
         continue-on-error: true
         run: |
